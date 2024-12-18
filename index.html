@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GDD Maker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+
+    header {
+      background-color: #6200ea;
+      color: #fff;
+      padding: 1em;
+      text-align: center;
+    }
+
+    form {
+      max-width: 800px;
+      margin: 2em auto;
+      background: #fff;
+      padding: 1.5em;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    fieldset {
+      border: none;
+      margin-bottom: 1.5em;
+    }
+
+    legend {
+      font-size: 1.2em;
+      margin-bottom: 0.5em;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.8em;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      padding: 0.5em;
+      margin-top: 0.3em;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #6200ea;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 1em;
+    }
+
+    button:hover {
+      background-color: #3700b3;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Game Design Document Maker</h1>
+  </header>
+  <main>
+    <form id="gdd-form">
+      <fieldset>
+        <legend>Game Overview</legend>
+        <label>Game Title: <input type="text" id="game-title" required></label>
+        <label>Genre: <input type="text" id="genre"></label>
+        <label>Target Audience: <input type="text" id="audience"></label>
+        <label>Core Concept: <textarea id="concept"></textarea></label>
+      </fieldset>
+      <!-- Add other sections (Gameplay, Story, etc.) in similar fieldsets -->
+      <fieldset>
+        <legend>Export/Import</legend>
+        <button type="button" id="export-btn">Export as .lgdd</button>
+        <input type="file" id="import-btn" accept=".lgdd">
+      </fieldset>
+      <button type="submit">Save GDD</button>
+    </form>
+  </main>
+  <script>
+    document.getElementById('export-btn').addEventListener('click', () => {
+      const data = {
+        title: document.getElementById('game-title').value,
+        genre: document.getElementById('genre').value,
+        audience: document.getElementById('audience').value,
+        concept: document.getElementById('concept').value,
+      };
+
+      const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = "gdd.lgdd";
+      a.click();
+    });
+
+    document.getElementById('import-btn').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const data = JSON.parse(reader.result);
+          document.getElementById('game-title').value = data.title || '';
+          document.getElementById('genre').value = data.genre || '';
+          document.getElementById('audience').value = data.audience || '';
+          document.getElementById('concept').value = data.concept || '';
+        };
+        reader.readAsText(file);
+      }
+    });
+  </script>
+</body>
+</html>
